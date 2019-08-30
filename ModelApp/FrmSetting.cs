@@ -14,18 +14,20 @@ namespace ModelApp
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            try
+            {
+                string connstr = ParamSetting.GetConfigValue(Global.config_file, "ConnectionString");
+                string[] config = connstr.Split(';');
 
-            string connstr = ParamSetting.GetConfigValue(Global.config_file, "ConnectionString");
-            string[] config = connstr.Split(';');
 
+                InitDatabaseList(connstr);
 
-            InitDatabaseList(connstr);
-
-            this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
-            this.cbxDatabase.SelectedValue = config[1].Substring(config[1].IndexOf("=") + 1);
-            this.txtUserName.Text = config[2].Substring(config[2].IndexOf("=") + 1);
-            this.txtPassword.Text = config[3].Substring(config[3].IndexOf("=") + 1);
-
+                this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
+                this.cbxDatabase.SelectedValue = config[1].Substring(config[1].IndexOf("=") + 1);
+                this.txtUserName.Text = config[2].Substring(config[2].IndexOf("=") + 1);
+                this.txtPassword.Text = config[3].Substring(config[3].IndexOf("=") + 1);
+            }
+            catch { }
             btnCancel.Click += BtnCancel_Click;
             btnOK.Click += BtnOK_Click;
             //txtPassword.TextChanged += TxtPassword_TextChanged;
@@ -65,8 +67,9 @@ namespace ModelApp
                 cbxDatabase.DisplayMember = "Name";
                 cbxDatabase.ValueMember = "Name";
             }
-            catch
+            catch(Exception ex)
             {
+                MessageBox.Show(ex.Message);
             }
         }
 

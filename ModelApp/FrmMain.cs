@@ -23,16 +23,21 @@ namespace ModelApp
         {
             base.OnLoad(e);
             InitEvent();
+            try
+            {
+                GetTableList();
+                string connstr = ParamSetting.GetConfigValue(Global.config_file, "ConnectionString");
+                string[] config = connstr.Split(';');
+                string outputPath = ParamSetting.GetConfigValue(Global.config_file, "OutputPath");
+                txtDir.Text = outputPath;
 
-            string connstr = ParamSetting.GetConfigValue(Global.config_file, "ConnectionString");
-            string[] config = connstr.Split(';');
-            string outputPath = ParamSetting.GetConfigValue(Global.config_file, "OutputPath");
-            txtDir.Text = outputPath;
-
-            this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
-            this.cbxDatabase.Text = config[1].Substring(config[1].IndexOf("=") + 1);
-
-            GetTableList();
+                this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
+                this.cbxDatabase.Text = config[1].Substring(config[1].IndexOf("=") + 1);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void InitEvent()
@@ -143,6 +148,9 @@ namespace ModelApp
             }
         }
 
+        /// <summary>
+        /// 读取数据库所有的表
+        /// </summary>
         private void GetTableList()
         {
             try
@@ -156,7 +164,10 @@ namespace ModelApp
                 checkedData = dataTable.Clone();
                 dgvCheckedTable.DataSource = checkedData;
             }
-            catch { }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void AddCheckedRow(DataGridViewRow dataGridViewRow)
@@ -230,7 +241,10 @@ namespace ModelApp
         /// <summary>
         /// 根据表字段信息创建模型
         /// </summary>
-        /// <param name="dtColumns"></param>
+        /// <param name="dtColumns">表字段信息</param>
+        /// <param name="tbName">表名</param>
+        /// <param name="description">表注释/说明</param>
+        /// <returns>实体模型是否创建成功</returns>
         private bool CreateModel(DataTable dtColumns, string tbName, string description)
         {
             bool successed = false;
@@ -327,6 +341,7 @@ namespace ModelApp
         /// </summary>
         /// <param name="clsName">类名</param>
         /// <param name="content">文件内容</param>
+        /// <returns>是否保存成功</returns>
         private bool SaveFile(string clsName, string content)
         {
             string path = txtDir.Text.Trim();
@@ -346,10 +361,10 @@ namespace ModelApp
         }
 
         /// <summary>
-        /// 获取实体类名
+        /// 根据表名、前缀、后缀规则，获取实体类名
         /// </summary>
-        /// <param name="tbName"></param>
-        /// <returns></returns>
+        /// <param name="tbName">表名</param>
+        /// <returns>实体类名</returns>
         private string GetClassName(string tbName)
         {
             string clsName = tbName;
