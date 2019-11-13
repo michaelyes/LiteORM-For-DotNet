@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq.Expressions;
@@ -38,6 +39,12 @@ namespace YEasyModel
                     if (attr.AutoReflect && !string.IsNullOrEmpty(attr.ColumnType))
                     {
                         object value = pi.GetValue(model, null);
+                        if (attr.ColumnType == ColumnType.datetimeType &&
+                            (null == value || (System.DateTime)value == default(System.DateTime)))
+                        {
+                            //空时间类型或空值，不写入数据库
+                            continue;
+                        }
                         if (attr.IsIdentity)
                         {
                             IsIdentity = true;
@@ -103,6 +110,12 @@ namespace YEasyModel
                     if (attr.AutoReflect && !string.IsNullOrEmpty(attr.ColumnType))
                     {
                         object value = pi.GetValue(model, null);
+                        if (attr.ColumnType == ColumnType.datetimeType &&
+                            (null == value || (System.DateTime)value == default(System.DateTime)))
+                        {
+                            //空时间类型或空值，不写入数据库
+                            continue;
+                        }
                         if (attr.IsPrimaryKey)
                         {
                             keyNames.Add(attr.ColumnName);
@@ -171,6 +184,12 @@ namespace YEasyModel
                     if (strFields.Contains(attr.ColumnName))
                     {
                         object value = pi.GetValue(model, null);
+                        if (attr.ColumnType == ColumnType.datetimeType &&
+                            (null == value || (System.DateTime)value == default(System.DateTime)))
+                        {
+                            //空时间类型或空值，不写入数据库
+                            continue;
+                        }
                         columns = columns + "," + attr.ColumnName + "= @" + attr.ColumnName;
                         parameters.Add(CreateSqlParameter(attr.ColumnName, value, attr.ColumnType, attr.Size));
                     }
@@ -226,6 +245,32 @@ namespace YEasyModel
             string strSql = CreateSqlByExpression<T>(filter, "delete from {0}");
 
             return DbHelperSQL.ExecuteSql(strSql);
+        }
+
+        /// <summary>
+        /// SqlDataAdapter批量更新
+        /// </summary>
+        /// <typeparam name="T">表实体类</typeparam>
+        /// <param name="modelList">列表实体</param>
+        /// <returns>返回更新影响的行数</returns>
+        public static int BatchUpdate<T>(List<T> modelList)
+        {
+            DataTable dataTable = ModelUtil.ModelList2DataTable<T>(modelList);
+
+            return DbHelperSQL.BatchUpdate(dataTable.TableName, dataTable);
+        }
+
+        /// <summary>
+        /// SqlBulkCopy批量提交数据[复制]
+        /// </summary>
+        /// <typeparam name="T">表实体类</typeparam>
+        /// <param name="modelList">列表实体</param>
+        /// <returns></returns>
+        public static void SqlBulkCopy<T>(List<T> modelList)
+        {
+            DataTable dataTable = ModelUtil.ModelList2DataTable<T>(modelList);
+
+            DbHelperSQL.SqlBulkCopyByDataTable(dataTable.TableName, dataTable);
         }
 
         /// <summary>
@@ -417,6 +462,64 @@ namespace YEasyModel
         }
 
         /// <summary>
+        /// 多表联合查询(left join)
+        /// </summary>
+        /// <typeparam name="T">返回的数据实体类型</typeparam>
+        /// <typeparam name="T1">表1</typeparam>
+        /// <typeparam name="T2">表2</typeparam>
+        /// <param name="joinExpression">联接条件</param>
+        /// <param name="filter">查询条件</param>
+        /// <param name="order">排序</param>
+        /// <param name="fields">查询字段</param>
+        /// <returns>数据实体列表</returns>
+        public static List<T> Join<T, T1, T2>(Expression<Func<T1, T2, bool>> joinExpression, Expression<Func<T1, T2, bool>> filter = null, OrderBy<T> order = null,
+            params Expression<Func<T1, T2, object>>[] fields)
+        {
+            string join = string.Empty;
+            string strWhere = string.Empty;
+            string strFields = string.Empty;
+            string orderBy = string.Empty;
+
+            join = LinqCompileExt.GetJoinByLambda(joinExpression, DataBaseType.SqlServer);
+
+            if (filter != null)
+                strWhere = LinqCompileExt.GetJoinByLambda(filter, DataBaseType.SqlServer);
+
+            if (order != null)
+                orderBy = OrderByUtil.GetOrderBy<T>(order.GetOrderByList());
+
+            foreach (var f in fields)
+            {
+                var fieldName = ExpressionField.GetFieldName<T1, T2>(f);
+                strFields = strFields + "," + fieldName;
+            }
+            if (string.IsNullOrEmpty(strFields))
+                strFields = "*";
+            else
+                strFields = strFields.Trim(',');
+
+
+            List<T> list = new List<T>();
+            StringBuilder strSql = new StringBuilder();
+            var model = Activator.CreateInstance<T>();
+            Type[] agrs = new Type[] { typeof(T1), typeof(T2) };//获得该类的Type
+            string tbName = JoinTable(joinExpression.Parameters, agrs);//表名
+
+            strSql.AppendFormat("select {0} ", strFields);
+            strSql.AppendFormat(" from {0} ", tbName);
+            strSql.AppendFormat(" on {0}", join);
+            if (!string.IsNullOrEmpty(strWhere))
+                strSql.AppendFormat(" where {0} ", strWhere);
+            if (!string.IsNullOrEmpty(orderBy))
+                strSql.Append(orderBy);
+
+            var dt = DbHelperSQL.Query(strSql.ToString(), null).Tables[0];
+            list = ModelUtil.DataTableParse<T>(dt);
+
+            return list;
+        }
+
+        /// <summary>
         /// 根据条件查询
         /// </summary>
         /// <typeparam name="T">表实体类</typeparam>
@@ -465,7 +568,7 @@ namespace YEasyModel
 
 
         /// <summary>
-        /// 查询当前字段值是否已存在
+        /// 根据表达式生成sql语句
         /// </summary>
         /// <typeparam name="T">表实体类</typeparam>
         /// <param name="filter">查询条件：lambda条件过滤表达式</param>
@@ -551,7 +654,7 @@ namespace YEasyModel
         /// </summary>
         /// <param name="t">该类的Type</param>
         /// <returns></returns>
-        private static string GetTableName(Type t)
+        public static string GetTableName(Type t)
         {
             string tbName;
             //获取类属性标识的表名，如果没有表标识，则取类名
@@ -566,6 +669,27 @@ namespace YEasyModel
             }
 
             return tbName;
+        }
+
+        public static string JoinTable(ReadOnlyCollection<ParameterExpression> parameters, params Type[] agrs)
+        {
+            string join = string.Empty;
+            for (int i = 0; i < agrs.Length; i++)
+            {
+                Type t = agrs[i];
+                string tableName = ModelDAL.GetTableName(t);
+                if (parameters.Count > i)
+                {
+                    tableName = tableName + " as " + parameters[i];
+                }
+
+                if (i > 0)
+                    join = join + " left join " + tableName;
+                else
+                    join = tableName;
+            }
+
+            return join;
         }
     }
 }

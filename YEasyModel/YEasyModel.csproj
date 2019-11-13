@@ -46,11 +46,14 @@
   <ItemGroup>
     <Compile Include="ColumnTypeEnum.cs" />
     <Compile Include="CommandInfo.cs" />
+    <Compile Include="ConditionBuilder.cs" />
+    <Compile Include="ConditionBuilderExt.cs" />
     <Compile Include="DataBaseType.cs" />
     <Compile Include="DbHelperSQL.cs" />
     <Compile Include="ExpressionField.cs" />
     <Compile Include="ExpressionVisitorExt.cs" />
     <Compile Include="LinqCompile.cs" />
+    <Compile Include="LinqCompileExt.cs" />
     <Compile Include="ModelAttribute.cs" />
     <Compile Include="ModelDAL.cs" />
     <Compile Include="ModelUtil.cs" />

@@ -102,10 +102,10 @@ namespace YEasyModel
         public static DataTable ModelList2DataTable<T>(List<T> modelList)
         {
             if (modelList == null) return null;
-
             DataTable dataTable = new DataTable();
             var model = modelList[0];
             Type t = model.GetType();//获得该类的Type
+            dataTable.TableName = ModelDAL.GetTableName(t);
             //创建表结构、设置字段信息
             foreach (PropertyInfo pi in t.GetProperties())
             {
@@ -145,7 +145,7 @@ namespace YEasyModel
                 int idx = 0;
                 foreach (PropertyInfo pi in t.GetProperties())
                 {
-                    object value = pi.GetValue(model, null);
+                    object value = pi.GetValue(m, null);
                     //ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
                     //if (attr != null && !string.IsNullOrEmpty(attr.ColumnType))
                     //{

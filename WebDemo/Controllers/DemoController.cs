@@ -12,6 +12,12 @@ namespace WebDemo.Controllers
         // GET api/<controller>
         public IEnumerable<DBModel.Person_FaceInfoModel> Get()
         {
+            List<DBModel.Person_FaceInfoModel> person_FaceInfoModel = YEasyModel.ModelDAL.Join<DBModel.Person_FaceInfoModel, 
+                DBModel.Person_FaceInfoModel, DBModel.ST_PersonModel>((t1, t2) => t1.Person_ID == t2.Person_ID,(t1,t2)=>t1.Remark !=null,
+                null,(t1,t2)=>t1.Person_ID, (t1, t2) => t1.Person_No, (t1, t2) => t1.FacePath);
+            //YEasyModel.ModelDAL.JoinLeft<DBModel.Person_FaceInfoModel, DBModel.ST_PersonModel, DBModel.ST_PersonModel > ((t1, t2,t3) => t1.Person_ID == t2.Person_ID&& t3.Person_ID==int.Parse(t1.Remark)&& t1.Remark!=null);
+
+
             var dt = YEasyModel.ModelDAL.SelectForDataTable<DBModel.Person_FaceInfoModel>();
             var list = YEasyModel.ModelUtil.DataTableParse<Models.FaceExt>(dt);
             System.Collections.SortedList ss = new System.Collections.SortedList();

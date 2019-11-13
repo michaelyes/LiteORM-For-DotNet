@@ -223,5 +223,7 @@ namespace YEasyModel
 
             return value;
         }
+        
+        //TODO:需要增加C#类型转Sql Server 数据类型方法
     }
 }

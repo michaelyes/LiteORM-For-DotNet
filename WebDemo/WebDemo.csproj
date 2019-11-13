@@ -61,10 +61,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="YEasyModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\YEasyModel\bin\Debug\YEasyModel.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
@@ -95,6 +91,7 @@
     </Compile>
     <Compile Include="Models\FaceExt.cs" />
     <Compile Include="Models\Person_FaceInfoModel.cs" />
+    <Compile Include="Models\ST_PersonModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +105,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YEasyModel\YEasyModel.csproj">
+      <Project>{f4b40f9f-bf9e-4741-837c-b0072fb7abef}</Project>
+      <Name>YEasyModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -792,9 +792,9 @@ namespace YEasyModel
                             return obj;
                         }
                     }
-                    catch (System.Data.SqlClient.SqlException e)
+                    catch(Exception ex)
                     {
-                        throw e;
+                        throw ex;
                     }
                 }
             }

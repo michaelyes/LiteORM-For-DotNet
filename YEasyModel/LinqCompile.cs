@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace YEasyModel
 {
     /// <summary>
-    /// lambda表达式转为where条件sql
+    /// lambda表达式转为sql
     /// </summary>
     public class LinqCompile
     {
@@ -32,7 +32,7 @@ namespace YEasyModel
                     object ce = conditionBuilder.Arguments[i];
                     if (ce == null)
                     {
-                        conditionBuilder.Arguments[i] = DBNull.Value;
+                        conditionBuilder.Arguments[i] = "NULL";
                     }
                     else if (ce is string || ce is char)
                     {
@@ -45,17 +45,19 @@ namespace YEasyModel
                         }
                         else
                         {
-
-
                             //****************************************
                             conditionBuilder.Arguments[i] = string.Format("'{0}'", ce.ToString());
                         }
                     }
                     else if (ce is DateTime)
                     {
-                        conditionBuilder.Arguments[i] = string.Format("'{0}'", ce.ToString());
+                        conditionBuilder.Arguments[i] = string.Format("'{0}'", ((DateTime)ce).ToString("yyyy-MM-dd HH:mm:ss"));//将日期格式化
                     }
-                    else if (ce is int || ce is long || ce is short || ce is decimal || ce is double || ce is float || ce is bool || ce is byte || ce is sbyte)
+                    else if(ce is bool)//布尔类型值，转换为1(True)、0(False)
+                    {
+                        conditionBuilder.Arguments[i] = ((bool)ce) ? 1 : 0;
+                    }
+                    else if (ce is int || ce is long || ce is short || ce is decimal || ce is double || ce is float || ce is byte || ce is sbyte)
                     {
                         conditionBuilder.Arguments[i] = ce.ToString();
                     }
@@ -65,12 +67,13 @@ namespace YEasyModel
                     }
                     else
                     {
-
                         conditionBuilder.Arguments[i] = string.Format("'{0}'", ce.ToString());
                     }
 
                 }
                 string strWhere = string.Format(conditionBuilder.Condition, conditionBuilder.Arguments);
+                strWhere = strWhere.Replace("<> NULL", "IS NOT NULL");
+
                 return strWhere;
             }
             catch {
@@ -88,20 +91,16 @@ namespace YEasyModel
             bool result = false;
             switch (databaseType.ToLower())
             {
-
                 case DataBaseType.PostGreSql:
                 case DataBaseType.Oracle:
-
                     result = true;
                     break;
             }
 
             return result;
-
-
         }
-
-
+        
         #endregion
+
     }
 }
