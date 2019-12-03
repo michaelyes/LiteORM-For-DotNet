@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseModel.cs" />
     <Compile Include="Dal.cs" />
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>

@@ -162,10 +162,13 @@ namespace YEasyModel
             if (filter != null)
                 strWhere = LinqCompile.GetWhereByLambda(filter, DataBaseType.SqlServer);
 
-            foreach (var f in fields)
+            if (fields != null)
             {
-                var fieldName = ExpressionField.GetFieldName<T>(f);
-                strFields.Add(fieldName);
+                foreach (var f in fields)
+                {
+                    var fieldName = ExpressionField.GetFieldName<T>(f);
+                    strFields.Add(fieldName);
+                }
             }
 
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -181,7 +184,7 @@ namespace YEasyModel
                 ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
                 if (attr != null)
                 {
-                    if (strFields.Contains(attr.ColumnName))
+                    if (strFields.Count == 0 || strFields.Contains(attr.ColumnName))
                     {
                         object value = pi.GetValue(model, null);
                         if (attr.ColumnType == ColumnType.datetimeType &&

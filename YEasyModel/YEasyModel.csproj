@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="ColumnTypeEnum.cs" />
     <Compile Include="CommandInfo.cs" />
+    <Compile Include="Common.cs" />
     <Compile Include="ConditionBuilder.cs" />
     <Compile Include="ConditionBuilderExt.cs" />
     <Compile Include="DataBaseType.cs" />

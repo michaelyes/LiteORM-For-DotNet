@@ -25,14 +25,17 @@ namespace ModelApp
             InitEvent();
             try
             {
-                GetTableList();
-                string connstr = ParamSetting.GetConfigValue(Global.config_file, "ConnectionString");
-                string[] config = connstr.Split(';');
                 string outputPath = ParamSetting.GetConfigValue(Global.config_file, "OutputPath");
                 txtDir.Text = outputPath;
 
-                this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
-                this.cbxDatabase.Text = config[1].Substring(config[1].IndexOf("=") + 1);
+                string connstr = ParamSetting.GetConfigValue(Global.config_file, "ConnectionString");
+                string[] config = connstr.Split(';');
+                if (config.Length > 1)
+                {
+                    GetTableList();
+                    this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
+                    this.cbxDatabase.Text = config[1].Substring(config[1].IndexOf("=") + 1);
+                }
             }
             catch(Exception ex)
             {
@@ -144,7 +147,14 @@ namespace ModelApp
             frmSetting.StartPosition = FormStartPosition.CenterParent;
             if (frmSetting.ShowDialog() == DialogResult.OK)
             {
-                GetTableList();
+                string connstr = ParamSetting.GetConfigValue(Global.config_file, "ConnectionString");
+                string[] config = connstr.Split(';');
+                if (config.Length > 1)
+                {
+                    GetTableList();
+                    this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
+                    this.cbxDatabase.Text = config[1].Substring(config[1].IndexOf("=") + 1);
+                }
             }
         }
 
@@ -224,7 +234,7 @@ namespace ModelApp
                 MessageBox.Show("请选择要生成模型的表");
                 return;
             }
-
+            BaseModel.BuildBaseModel(txtNamespace.Text.Trim(), txtDir.Text);
             foreach (DataRow dr in this.checkedData.Rows)
             {
                 DataTable dtColumns = Dal.GetTableColumnList(dr["name"].ToString());
@@ -271,7 +281,7 @@ namespace ModelApp
             //stringBuilder.Append("    [Serializable]");
             stringBuilder.AppendFormat("    [TableAttribute(TableName = \"{0}\")]", tbName);
             stringBuilder.AppendLine();
-            stringBuilder.AppendFormat("    public partial class {0}", clsName);
+            stringBuilder.AppendFormat("    public partial class {0}:BaseModel", clsName);
             stringBuilder.AppendLine();
             stringBuilder.Append("    {");
             stringBuilder.AppendLine();
@@ -331,33 +341,11 @@ namespace ModelApp
             stringBuilder.Append("}");
             stringBuilder.AppendLine();
 
-            successed = SaveFile(clsName, stringBuilder.ToString());
+            successed = BaseModel.SaveFile(clsName, stringBuilder.ToString(), txtDir.Text);
+            if (successed)
+                fileNum++;
 
             return successed;
-        }
-
-        /// <summary>
-        /// 保存实体类代码文件
-        /// </summary>
-        /// <param name="clsName">类名</param>
-        /// <param name="content">文件内容</param>
-        /// <returns>是否保存成功</returns>
-        private bool SaveFile(string clsName, string content)
-        {
-            string path = txtDir.Text.Trim();
-            path = path + "\\" + clsName + ".cs";
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-
-            byte[] buff = Encoding.UTF8.GetBytes(content);
-            var fs = File.Create(path);
-            fs.Write(buff, 0, buff.Length);
-            fs.Close();
-            fs.Dispose();
-            fileNum++;
-            return true;
         }
 
         /// <summary>

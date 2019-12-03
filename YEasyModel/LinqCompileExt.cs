@@ -145,6 +145,7 @@ namespace YEasyModel
 
                 string strWhere = string.Format(conditionBuilder.Condition, conditionBuilder.Arguments);
                 strWhere = strWhere.Replace("<> NULL", "IS NOT NULL");
+                strWhere = strWhere.Replace("= NULL", "IS NULL");
 
                 return strWhere;
             }

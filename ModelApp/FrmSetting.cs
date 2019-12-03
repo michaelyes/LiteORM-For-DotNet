@@ -18,14 +18,15 @@ namespace ModelApp
             {
                 string connstr = ParamSetting.GetConfigValue(Global.config_file, "ConnectionString");
                 string[] config = connstr.Split(';');
-
-
-                InitDatabaseList(connstr);
-
-                this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
-                this.cbxDatabase.SelectedValue = config[1].Substring(config[1].IndexOf("=") + 1);
-                this.txtUserName.Text = config[2].Substring(config[2].IndexOf("=") + 1);
-                this.txtPassword.Text = config[3].Substring(config[3].IndexOf("=") + 1);
+                
+                if (config.Length > 1)
+                {
+                    InitDatabaseList(connstr);
+                    this.txtServer.Text = config[0].Substring(config[0].IndexOf("=") + 1);
+                    this.cbxDatabase.SelectedValue = config[1].Substring(config[1].IndexOf("=") + 1);
+                    this.txtUserName.Text = config[2].Substring(config[2].IndexOf("=") + 1);
+                    this.txtPassword.Text = config[3].Substring(config[3].IndexOf("=") + 1);
+                }
             }
             catch { }
             btnCancel.Click += BtnCancel_Click;
@@ -86,6 +87,7 @@ namespace ModelApp
             if (ParamSetting.SaveConfig(Global.config_file, "ConnectionString", _connStr))
             {
                 MessageBox.Show("保存数据库配置成功");
+                YEasyModel.DbHelperSQL.connectionString = _connStr;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

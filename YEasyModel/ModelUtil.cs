@@ -135,6 +135,7 @@ namespace YEasyModel
                     //    dataColumn.DataType = typeof(string);
                     //}
                 }
+                if (Common.Star_SelectAllColumn.Equals(pi.Name)) continue;
                 dataTable.Columns.Add(dataColumn);
             }
 
@@ -145,6 +146,7 @@ namespace YEasyModel
                 int idx = 0;
                 foreach (PropertyInfo pi in t.GetProperties())
                 {
+                    if (Common.Star_SelectAllColumn.Equals(pi.Name)) continue;
                     object value = pi.GetValue(m, null);
                     //ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
                     //if (attr != null && !string.IsNullOrEmpty(attr.ColumnType))
