@@ -105,7 +105,7 @@ namespace YEasyModel
             foreach (PropertyInfo pi in t.GetProperties())
             {
                 ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
-                if (attr != null)
+                if (attr != null && !attr.IsPrimaryKey)
                 {
                     if (attr.AutoReflect && !string.IsNullOrEmpty(attr.ColumnType))
                     {
@@ -116,17 +116,14 @@ namespace YEasyModel
                             //空时间类型或空值，不写入数据库
                             continue;
                         }
-                        if (attr.IsPrimaryKey)
-                        {
-                            keyNames.Add(attr.ColumnName);
-                        }
-                        else
-                        {
-                            columns = columns + "," + attr.ColumnName + "= @" + attr.ColumnName;
-                        }
+                        columns = columns + "," + attr.ColumnName + "= @" + attr.ColumnName;
                         parameters.Add(CreateSqlParameter(attr.ColumnName, value, attr.ColumnType, attr.Size));
-
                     }
+                }
+
+                if (attr != null && attr.IsPrimaryKey)
+                {
+                    keyNames.Add(attr.ColumnName);
                 }
             }
 
@@ -182,7 +179,7 @@ namespace YEasyModel
             foreach (PropertyInfo pi in t.GetProperties())
             {
                 ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
-                if (attr != null)
+                if (attr != null && !attr.IsPrimaryKey)//跳过更新主键字段
                 {
                     if (strFields.Count == 0 || strFields.Contains(attr.ColumnName))
                     {
