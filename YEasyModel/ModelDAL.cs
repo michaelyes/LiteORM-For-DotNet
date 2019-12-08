@@ -105,7 +105,7 @@ namespace YEasyModel
             foreach (PropertyInfo pi in t.GetProperties())
             {
                 ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
-                if (attr != null && !attr.IsPrimaryKey)
+                if (attr != null)
                 {
                     if (attr.AutoReflect && !string.IsNullOrEmpty(attr.ColumnType))
                     {
@@ -116,7 +116,10 @@ namespace YEasyModel
                             //空时间类型或空值，不写入数据库
                             continue;
                         }
-                        columns = columns + "," + attr.ColumnName + "= @" + attr.ColumnName;
+                        if (!attr.IsPrimaryKey)//跳过更新主键
+                        {                            
+                            columns = columns + "," + attr.ColumnName + "= @" + attr.ColumnName;
+                        }
                         parameters.Add(CreateSqlParameter(attr.ColumnName, value, attr.ColumnType, attr.Size));
                     }
                 }
