@@ -48,12 +48,12 @@ namespace WebDemo.Controllers
                         //查询所有数据
             YEasyModel.ModelDAL.Select<DBModel.Person_FaceInfoModel>();
                         //根据FaceID查询单条记录
-            YEasyModel.ModelDAL.SelectTopRecord<DBModel.Person_FaceInfoModel>(q => q.FaceID == id);
+            YEasyModel.ModelDAL.SelectSingleRecord<DBModel.Person_FaceInfoModel>(q => q.FaceID == id);
                         //按条件查询数据
             YEasyModel.ModelDAL.Select<DBModel.Person_FaceInfoModel>(q => q.Create_Date > DateTime.Now.AddDays(-1) 
                         && q.Create_Date < DateTime.Now && q.Remark != "");
                         //按条件查询、指定字段1、字段2...
-            YEasyModel.ModelDAL.SelectTopRecord<DBModel.Person_FaceInfoModel>(q => q.FaceID == id, null, q => q.Person_ID, q => q.FacePath);
+            YEasyModel.ModelDAL.SelectSingleRecord<DBModel.Person_FaceInfoModel>(q => q.FaceID == id, null, q => q.Person_ID, q => q.FacePath);
                         //创建字段排序规则
                         var order = new OrderBy<DBModel.Person_FaceInfoModel>();
                         order.Add(q => q.Create_Date, OrderByEnum.asc);

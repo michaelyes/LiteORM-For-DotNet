@@ -117,7 +117,7 @@ namespace YEasyModel
                             continue;
                         }
                         if (!attr.IsPrimaryKey)//跳过更新主键
-                        {                            
+                        {
                             columns = columns + "," + attr.ColumnName + "= @" + attr.ColumnName;
                         }
                         parameters.Add(CreateSqlParameter(attr.ColumnName, value, attr.ColumnType, attr.Size));
@@ -182,7 +182,7 @@ namespace YEasyModel
             foreach (PropertyInfo pi in t.GetProperties())
             {
                 ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
-                if (attr != null && !attr.IsPrimaryKey)//跳过更新主键字段
+                if (attr != null && !attr.IsIdentity)//跳过更新主键字段
                 {
                     if (strFields.Count == 0 || strFields.Contains(attr.ColumnName))
                     {
@@ -193,6 +193,10 @@ namespace YEasyModel
                             //空时间类型或空值，不写入数据库
                             continue;
                         }
+                        //else if(attr.ColumnType == ColumnType.datetimeType)
+                        //{
+                        //    value = ((System.DateTime)value).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                        //}
                         columns = columns + "," + attr.ColumnName + "= @" + attr.ColumnName;
                         parameters.Add(CreateSqlParameter(attr.ColumnName, value, attr.ColumnType, attr.Size));
                     }
@@ -450,13 +454,51 @@ namespace YEasyModel
         /// 根据条件查询第一条记录
         /// </summary>
         /// <typeparam name="T">表实体类</typeparam>
+        /// <param name="topNumber">记录数：默认1条记录</param>
         /// <param name="filter">查询条件：lambda条件过滤表达式</param>
         /// <param name="order">排序表达式</param>
         /// <param name="fields">查询字段：lambda字段表达式【可多组】</param>
         /// <returns>列表实体</returns>
-        public static T SelectTopRecord<T>(Expression<Func<T, bool>> filter = null, OrderBy<T> order = null, params Expression<Func<T, object>>[] fields)
+        public static T SelectTopRecord<T>(int topNumber = 1, Expression<Func<T, bool>> filter = null, OrderBy<T> order = null, params Expression<Func<T, object>>[] fields)
         {
-            var list = Select<T>(filter, order, fields);
+            string strWhere = string.Empty;
+            string strFields = string.Empty;
+            string orderBy = string.Empty;
+
+            if (filter != null)
+                strWhere = LinqCompile.GetWhereByLambda(filter, DataBaseType.SqlServer);
+
+            if (order != null)
+                orderBy = OrderByUtil.GetOrderBy<T>(order.GetOrderByList());
+
+            foreach (var f in fields)
+            {
+                var fieldName = ExpressionField.GetFieldName<T>(f);
+                strFields = strFields + "," + fieldName;
+            }
+            if (string.IsNullOrEmpty(strFields))
+                strFields = "*";
+            else
+                strFields = strFields.Trim(',');
+
+
+            List<T> list = new List<T>();
+            StringBuilder strSql = new StringBuilder();
+            var model = Activator.CreateInstance<T>();
+            Type t = model.GetType();//获得该类的Type
+            string tbName = GetTableName(t);//表名
+
+            strSql.AppendFormat("select top {0} {1} ", topNumber, strFields);
+
+            strSql.AppendFormat(" from {0} ", tbName);
+            if (!string.IsNullOrEmpty(strWhere))
+                strSql.AppendFormat(" where {0} ", strWhere);
+            if (!string.IsNullOrEmpty(orderBy))
+                strSql.Append(orderBy);
+
+            var dt = DbHelperSQL.Query(strSql.ToString(), null).Tables[0];
+            list = ModelUtil.DataTableParse<T>(dt);
+
 
             if (list != null && list.Count > 0)
                 return list[0];
@@ -569,6 +611,105 @@ namespace YEasyModel
             return DbHelperSQL.Query(strSql.ToString(), null).Tables[0];
         }
 
+        /// <summary>
+        /// 根据条件查询一条记录
+        /// </summary>
+        /// <typeparam name="T">表实体类</typeparam>
+        /// <param name="filter">查询条件：lambda条件过滤表达式</param>
+        /// <param name="order">排序表达式</param>
+        /// <param name="fields">查询字段：lambda字段表达式【可多组】</param>
+        /// <returns>列表实体</returns>
+        public static T SelectSingleRecord<T>(Expression<Func<T, bool>> filter = null, OrderBy<T> order = null, params Expression<Func<T, object>>[] fields)
+        {
+            string strWhere = string.Empty;
+            string strFields = string.Empty;
+            string orderBy = string.Empty;
+
+            if (filter != null)
+                strWhere = LinqCompile.GetWhereByLambda(filter, DataBaseType.SqlServer);
+
+            if (order != null)
+                orderBy = OrderByUtil.GetOrderBy<T>(order.GetOrderByList());
+
+            foreach (var f in fields)
+            {
+                var fieldName = ExpressionField.GetFieldName<T>(f);
+                strFields = strFields + "," + fieldName;
+            }
+            if (string.IsNullOrEmpty(strFields))
+                strFields = "*";
+            else
+                strFields = strFields.Trim(',');
+
+
+            List<T> list = new List<T>();
+            StringBuilder strSql = new StringBuilder();
+            var model = Activator.CreateInstance<T>();
+            Type t = model.GetType();//获得该类的Type
+            string tbName = GetTableName(t);//表名
+
+            strSql.AppendFormat("select {1} ", 1, strFields);
+
+            strSql.AppendFormat(" from {0} ", tbName);
+            if (!string.IsNullOrEmpty(strWhere))
+                strSql.AppendFormat(" where {0} ", strWhere);
+            if (!string.IsNullOrEmpty(orderBy))
+                strSql.Append(orderBy);
+
+            var dt = DbHelperSQL.Query(strSql.ToString(), null).Tables[0];
+            list = ModelUtil.DataTableParse<T>(dt);
+
+
+            if (list != null && list.Count > 0)
+                return list[0];
+            else
+                return default(T);
+        }
+
+        /// <summary>
+        /// 查询当前指定字段的值
+        /// </summary>
+        /// <typeparam name="T">表实体类</typeparam>
+        /// <param name="filter">查询条件：lambda条件过滤表达式</param>
+        /// <param name="order">排序表达式</param>
+        /// <param name="field">查询字段：lambda字段表达式</param>
+        /// <returns>返回当前行的查询字段值</returns>
+        public static object GetValue<T>(Expression<Func<T, bool>> filter = null, OrderBy<T> order = null, Expression<Func<T, object>> field = null)
+        {
+            string strWhere = string.Empty;
+            string strFields = string.Empty;
+            string orderBy = string.Empty;
+
+            if (field == null)
+            {
+                throw new Exception("请指定查询字段");
+                //return null;
+            }
+
+            if (filter != null)
+                strWhere = LinqCompile.GetWhereByLambda(filter, DataBaseType.SqlServer);
+
+            if (order != null)
+                orderBy = OrderByUtil.GetOrderBy<T>(order.GetOrderByList());
+
+            strFields = ExpressionField.GetFieldName<T>(field);
+
+            List<T> list = new List<T>();
+            StringBuilder strSql = new StringBuilder();
+            var model = Activator.CreateInstance<T>();
+            Type t = model.GetType();//获得该类的Type
+            string tbName = GetTableName(t);//表名
+
+            strSql.AppendFormat("select {0} ", strFields);
+
+            strSql.AppendFormat(" from {0} ", tbName);
+            if (!string.IsNullOrEmpty(strWhere))
+                strSql.AppendFormat(" where {0} ", strWhere);
+            if (!string.IsNullOrEmpty(orderBy))
+                strSql.Append(orderBy);
+
+            return DbHelperSQL.GetSingle(strSql.ToString());
+        }
 
         /// <summary>
         /// 根据表达式生成sql语句
@@ -607,7 +748,12 @@ namespace YEasyModel
             SqlParameter parameter = new SqlParameter(parameterName, value);
             if (!string.IsNullOrEmpty(type))
             {
-                object obj = Enum.Parse(typeof(SqlDbType), type, true);
+                object obj = null;
+                //if (type == ColumnType.datetimeType)
+                //    obj = SqlDbType.VarChar;
+                //else
+                obj = Enum.Parse(typeof(SqlDbType), type, true);
+
                 if (obj != null)
                 {
                     SqlDbType sqlDbType = (SqlDbType)obj;
