@@ -64,6 +64,7 @@
     <Compile Include="OrderByUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PubConstant.cs" />
+    <Compile Include="SqlColumnUtil.cs" />
     <Compile Include="TypeUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

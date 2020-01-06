@@ -223,7 +223,41 @@ namespace YEasyModel
 
             return value;
         }
-        
+
         //TODO:需要增加C#类型转Sql Server 数据类型方法
+
+
+        /// <summary>
+        /// C#类型转Sql Server 数据类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string GetSqlDataType(Type type)
+        {
+            string value = ColumnType.varcharType;
+            if (type == typeof(int) || type == typeof(long) || type == typeof(decimal))
+                value = ColumnType.intType;
+            else
+                value = ColumnType.varcharType;
+
+            return value;
+        }
+
+        /// <summary>
+        /// C#类型值转Sql Server 数据类型值
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object GetSqlDataTypeValue(object obj, Type type)
+        {
+            object value = null;
+            if (type == typeof(int) || type == typeof(long) || type == typeof(decimal))
+                value = obj == null || string.IsNullOrEmpty(obj.ToString()) ? 0 : obj;
+            else
+                value = string.Format("'{0}'", obj == null ? "" : obj.ToString());
+
+            return value;
+        }
     }
 }

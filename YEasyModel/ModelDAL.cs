@@ -21,6 +21,17 @@ namespace YEasyModel
         /// <returns></returns>
         public static int Insert(object model)
         {
+            return Insert(model, false);
+        }
+
+        /// <summary>
+        /// 新增一条数据
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="writeIdentityKey">是否写入自增长ID</param>
+        /// <returns></returns>
+        public static int Insert(object model,bool writeIdentityKey)
+        {
             List<SqlParameter> parameters = new List<SqlParameter>();
             bool IsIdentity = false;//是否自增
             Type t = model.GetType();//获得该类的Type
@@ -48,6 +59,11 @@ namespace YEasyModel
                         if (attr.IsIdentity)
                         {
                             IsIdentity = true;
+                            if (writeIdentityKey)
+                            {
+                                columns = columns + "," + attr.ColumnName;
+                                values = values + ",@" + attr.ColumnName;
+                            }
                         }
                         else
                         {
@@ -65,10 +81,18 @@ namespace YEasyModel
             strSql.Append(values.Trim(new char[] { ',' }));
             strSql.Append(");");
 
-            object obj;
+            object obj = null;
             if (IsIdentity)
             {
-                strSql.Append("select @@IDENTITY");
+                if (writeIdentityKey)
+                {
+                    strSql.Insert(0, string.Format("SET IDENTITY_INSERT {0} ON; ", tbName));
+                    strSql.Append(string.Format("SET IDENTITY_INSERT {0} OFF; ", tbName));
+                }
+                else
+                {
+                    strSql.Append("select @@IDENTITY");
+                }
                 obj = DbHelperSQL.GetSingle(strSql.ToString(), parameters.ToArray());
             }
             else

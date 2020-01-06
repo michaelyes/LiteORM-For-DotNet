@@ -320,11 +320,24 @@ namespace YEasyModel
 
                 case "Equals":
                     // not in 或者  in 或 not like
-                    format = "({0} {1} )";
+                    format = "{0} {1} ";
                     break;
 
                 case "Parse":
-                    format = "({1})";
+                    format = "{1}";
+                    break;
+
+                case "IsNull":
+                    if (m.Method.ReflectedType == typeof(SqlColumnUtil))
+                    {
+                        object obj = TypeUtil.GetSqlDataTypeValue(m.Arguments[1], m.Arguments[1].Type);
+                        format = "isnull({1}," + obj.ToString().Replace("\"","") + ")";
+                    }
+                    else
+                    {
+                        format = "({1})";
+                        throw new NotSupportedException(m.NodeType + " is not supported!");
+                    }
                     break;
 
                 default:
@@ -332,7 +345,7 @@ namespace YEasyModel
                     {
                         if (DataBaseType.SqlServer.Equals(m_dataBaseType))
                         {
-                            format = "(convert(int,{1}))";
+                            format = "convert(int,{1})";
                             break;
                         }
                     }
@@ -346,7 +359,7 @@ namespace YEasyModel
             if (m.Object != null)
                 left = this.m_conditionParts.Pop();
 
-            this.m_conditionParts.Push(String.Format(format, left, right));
+            this.m_conditionParts.Push(string.Format(format, left, right));
             return m;
         }
 
