@@ -89,6 +89,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CT_ComsumeDetail_DeleteModel.cs" />
+    <Compile Include="Models\CT_Comsume_GetMaxIdModel.cs" />
     <Compile Include="Models\FaceExt.cs" />
     <Compile Include="Models\Person_FaceInfoModel.cs" />
     <Compile Include="Models\ST_PersonModel.cs" />

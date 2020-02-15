@@ -1,6 +1,6 @@
 ﻿namespace ModelApp
 {
-    partial class FrmMain
+    partial class FrmProc
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -28,9 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.menuSetting = new System.Windows.Forms.ToolStripMenuItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmProc));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnRemoveAll = new System.Windows.Forms.Button();
@@ -38,15 +36,8 @@
             this.btnSelectCurrent = new System.Windows.Forms.Button();
             this.btnSelectAll = new System.Windows.Forms.Button();
             this.dgvCheckedTable = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvTable = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgv_Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.ckbShowView = new System.Windows.Forms.CheckBox();
             this.cbxDatabase = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.txtServer = new System.Windows.Forms.TextBox();
@@ -62,8 +53,13 @@
             this.btnSelectDir = new System.Windows.Forms.Button();
             this.txtDir = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnProc = new System.Windows.Forms.Button();
-            this.menuStrip1.SuspendLayout();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgv_Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -75,33 +71,11 @@
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // menuStrip1
-            // 
-            this.menuStrip1.BackColor = System.Drawing.Color.Gainsboro;
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuSetting});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1193, 43);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // menuSetting
-            // 
-            this.menuSetting.Font = new System.Drawing.Font("Microsoft YaHei UI", 10F);
-            this.menuSetting.Image = ((System.Drawing.Image)(resources.GetObject("menuSetting.Image")));
-            this.menuSetting.Name = "menuSetting";
-            this.menuSetting.Padding = new System.Windows.Forms.Padding(4);
-            this.menuSetting.Size = new System.Drawing.Size(148, 39);
-            this.menuSetting.Text = "配置数据库";
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 43);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -117,8 +91,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.btnSelectDir);
             this.splitContainer1.Panel2.Controls.Add(this.txtDir);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Size = new System.Drawing.Size(1193, 558);
-            this.splitContainer1.SplitterDistance = 365;
+            this.splitContainer1.Size = new System.Drawing.Size(1193, 601);
+            this.splitContainer1.SplitterDistance = 404;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -134,10 +108,10 @@
             this.groupBox1.Location = new System.Drawing.Point(0, 55);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1193, 310);
+            this.groupBox1.Size = new System.Drawing.Size(1193, 349);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "选择表";
+            this.groupBox1.Text = "选择存储过程";
             // 
             // btnRemoveAll
             // 
@@ -185,44 +159,17 @@
             this.dgvCheckedTable.ColumnHeadersHeight = 30;
             this.dgvCheckedTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvCheckedTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
             this.Column4,
+            this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2});
             this.dgvCheckedTable.Dock = System.Windows.Forms.DockStyle.Right;
             this.dgvCheckedTable.Location = new System.Drawing.Point(699, 26);
             this.dgvCheckedTable.Name = "dgvCheckedTable";
-            this.dgvCheckedTable.ReadOnly = true;
             this.dgvCheckedTable.RowHeadersWidth = 20;
             this.dgvCheckedTable.RowTemplate.Height = 25;
             this.dgvCheckedTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCheckedTable.Size = new System.Drawing.Size(491, 281);
+            this.dgvCheckedTable.Size = new System.Drawing.Size(491, 320);
             this.dgvCheckedTable.TabIndex = 1;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "name";
-            this.dataGridViewTextBoxColumn1.FillWeight = 50F;
-            this.dataGridViewTextBoxColumn1.HeaderText = "表名";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            // 
-            // Column4
-            // 
-            this.Column4.DataPropertyName = "id";
-            this.Column4.HeaderText = "ID";
-            this.Column4.Name = "Column4";
-            this.Column4.ReadOnly = true;
-            this.Column4.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "Description";
-            this.dataGridViewTextBoxColumn2.FillWeight = 50F;
-            this.dataGridViewTextBoxColumn2.HeaderText = "备注";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
             // 
             // dgvTable
             // 
@@ -232,9 +179,10 @@
             this.dgvTable.ColumnHeadersHeight = 30;
             this.dgvTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
             this.dgv_Id,
-            this.Column2});
+            this.Column1,
+            this.Column2,
+            this.Column3});
             this.dgvTable.Dock = System.Windows.Forms.DockStyle.Left;
             this.dgvTable.Location = new System.Drawing.Point(3, 26);
             this.dgvTable.Name = "dgvTable";
@@ -242,40 +190,12 @@
             this.dgvTable.RowHeadersWidth = 20;
             this.dgvTable.RowTemplate.Height = 25;
             this.dgvTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTable.Size = new System.Drawing.Size(491, 281);
+            this.dgvTable.Size = new System.Drawing.Size(491, 320);
             this.dgvTable.TabIndex = 0;
-            // 
-            // Column1
-            // 
-            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column1.DataPropertyName = "name";
-            this.Column1.FillWeight = 50F;
-            this.Column1.HeaderText = "表名";
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            // 
-            // dgv_Id
-            // 
-            this.dgv_Id.DataPropertyName = "id";
-            this.dgv_Id.HeaderText = "ID";
-            this.dgv_Id.Name = "dgv_Id";
-            this.dgv_Id.ReadOnly = true;
-            this.dgv_Id.Visible = false;
-            // 
-            // Column2
-            // 
-            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column2.DataPropertyName = "Description";
-            this.Column2.FillWeight = 50F;
-            this.Column2.HeaderText = "备注";
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.btnProc);
-            this.panel1.Controls.Add(this.ckbShowView);
             this.panel1.Controls.Add(this.cbxDatabase);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.txtServer);
@@ -286,18 +206,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1193, 55);
             this.panel1.TabIndex = 1;
-            // 
-            // ckbShowView
-            // 
-            this.ckbShowView.AutoSize = true;
-            this.ckbShowView.Checked = true;
-            this.ckbShowView.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckbShowView.Location = new System.Drawing.Point(742, 13);
-            this.ckbShowView.Name = "ckbShowView";
-            this.ckbShowView.Size = new System.Drawing.Size(115, 24);
-            this.ckbShowView.TabIndex = 8;
-            this.ckbShowView.Text = "显示视图";
-            this.ckbShowView.UseVisualStyleBackColor = true;
             // 
             // cbxDatabase
             // 
@@ -375,16 +283,16 @@
             this.txtReplacePrefix.Name = "txtReplacePrefix";
             this.txtReplacePrefix.Size = new System.Drawing.Size(158, 30);
             this.txtReplacePrefix.TabIndex = 4;
-            this.txtReplacePrefix.Text = "t_;tb_";
+            this.txtReplacePrefix.Text = "p_;sp_";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(350, 43);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(359, 20);
+            this.label3.Size = new System.Drawing.Size(319, 20);
             this.label3.TabIndex = 5;
-            this.label3.Text = "去掉表名前缀(多个以“;”分号隔开)：";
+            this.label3.Text = "去掉前缀(多个以“;”分号隔开)：";
             // 
             // txtNamespace
             // 
@@ -411,7 +319,7 @@
             this.btnBuildingModel.Name = "btnBuildingModel";
             this.btnBuildingModel.Size = new System.Drawing.Size(145, 35);
             this.btnBuildingModel.TabIndex = 6;
-            this.btnBuildingModel.Text = "生成表模型";
+            this.btnBuildingModel.Text = "生成模型";
             this.btnBuildingModel.UseVisualStyleBackColor = true;
             // 
             // btnSelectDir
@@ -442,31 +350,76 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "输出目录：";
             // 
-            // btnProc
+            // Column4
             // 
-            this.btnProc.Location = new System.Drawing.Point(944, 9);
-            this.btnProc.Name = "btnProc";
-            this.btnProc.Size = new System.Drawing.Size(145, 35);
-            this.btnProc.TabIndex = 9;
-            this.btnProc.Text = "存储过程";
-            this.btnProc.UseVisualStyleBackColor = true;
+            this.Column4.DataPropertyName = "id";
+            this.Column4.HeaderText = "ID";
+            this.Column4.Name = "Column4";
+            this.Column4.Visible = false;
             // 
-            // FrmMain
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "name";
+            this.dataGridViewTextBoxColumn1.FillWeight = 50F;
+            this.dataGridViewTextBoxColumn1.HeaderText = "存储过程名";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "Description";
+            this.dataGridViewTextBoxColumn2.FillWeight = 50F;
+            this.dataGridViewTextBoxColumn2.HeaderText = "备注";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            // 
+            // dgv_Id
+            // 
+            this.dgv_Id.DataPropertyName = "id";
+            this.dgv_Id.HeaderText = "ID";
+            this.dgv_Id.Name = "dgv_Id";
+            this.dgv_Id.ReadOnly = true;
+            this.dgv_Id.Visible = false;
+            // 
+            // Column1
+            // 
+            this.Column1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column1.DataPropertyName = "name";
+            this.Column1.FillWeight = 50F;
+            this.Column1.HeaderText = "存储过程名";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            // 
+            // Column2
+            // 
+            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column2.DataPropertyName = "Description";
+            this.Column2.FillWeight = 50F;
+            this.Column2.HeaderText = "备注";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            // 
+            // Column3
+            // 
+            this.Column3.DataPropertyName = "type";
+            this.Column3.HeaderText = "Column3";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Visible = false;
+            // 
+            // FrmProc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1193, 601);
             this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("宋体", 10F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MainMenuStrip = this.menuStrip1;
-            this.Name = "FrmMain";
+            this.Name = "FrmProc";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "表模型生成";
+            this.Text = "存储过程模型生成";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
@@ -480,14 +433,10 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem menuSetting;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnRemoveAll;
@@ -512,14 +461,13 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtServer;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.CheckBox ckbShowView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgv_Id;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.Button btnProc;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
     }
 }
 

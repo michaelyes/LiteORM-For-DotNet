@@ -8,13 +8,13 @@ using System.Windows.Forms;
 
 namespace ModelApp
 {
-    public partial class FrmMain : Form
+    public partial class FrmProc : Form
     {
         DataTable dataTable;
         DataTable checkedData;
         int fileNum = 0;
 
-        public FrmMain()
+        public FrmProc()
         {
             InitializeComponent();
         }
@@ -37,7 +37,7 @@ namespace ModelApp
                     this.cbxDatabase.Text = config[1].Substring(config[1].IndexOf("=") + 1);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -51,29 +51,8 @@ namespace ModelApp
             btnSelectAll.Click += BtnSelectAll_Click;
             btnSelectCurrent.Click += BtnSelectCurrent_Click;
             btnSelectDir.Click += BtnSelectDir_Click;
-            menuSetting.Click += MenuSetting_Click;
             dgvCheckedTable.DoubleClick += DgvCheckedTable_DoubleClick;
             dgvTable.DoubleClick += DgvTable_DoubleClick;
-            ckbShowView.Click += CkbShowView_Click;
-            btnProc.Click += BtnProc_Click;
-        }
-
-        private void BtnProc_Click(object sender, EventArgs e)
-        {
-            FrmProc frmProc = new FrmProc();
-            frmProc.ShowDialog();
-        }
-
-        private void CkbShowView_Click(object sender, EventArgs e)
-        {
-            if (ckbShowView.Checked)
-            {
-                dataTable.DefaultView.RowFilter = "1=1";
-            }
-            else
-            {
-                dataTable.DefaultView.RowFilter = "type=1";
-            }
         }
 
         private void DgvTable_DoubleClick(object sender, EventArgs e)
@@ -166,7 +145,7 @@ namespace ModelApp
         }
 
         /// <summary>
-        /// 读取数据库所有的表
+        /// 读取数据库所有的存储过程
         /// </summary>
         private void GetTableList()
         {
@@ -175,13 +154,13 @@ namespace ModelApp
                 //string connstr = ParamSetting.GetConfigValue(Global._config_file, "ConnectionString");
                 dgvTable.AutoGenerateColumns = false;
                 dgvCheckedTable.AutoGenerateColumns = false;
-                dataTable = Dal.GetTableList();
-                dataTable.Merge(Dal.GetTableViewList());
+                dataTable = Dal.GetProcedureList();
+                //dataTable.Merge(Dal.GetFuntionList());
                 dgvTable.DataSource = dataTable;
                 checkedData = dataTable.Clone();
                 dgvCheckedTable.DataSource = checkedData;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -217,7 +196,7 @@ namespace ModelApp
         }
 
         /// <summary>
-        /// 生成表模型
+        /// 生成存储过程模型
         /// </summary>
         private void BuildingModel()
         {
@@ -241,11 +220,11 @@ namespace ModelApp
                 MessageBox.Show("请选择要生成模型的表");
                 return;
             }
-            BaseModel.BuildBaseModel(txtNamespace.Text.Trim(), txtDir.Text);
+            //BaseModel.BuildBaseModel(txtNamespace.Text.Trim(), txtDir.Text);
             foreach (DataRow dr in this.checkedData.Rows)
             {
-                DataTable dtColumns = Dal.GetTableColumnList(dr["name"].ToString());
-                string description = dr["description"].ToString();
+                DataTable dtColumns = Dal.GetProcedureParameters(int.Parse(dr["id"].ToString()));
+                string description = "";
                 CreateModel(dtColumns, dr["name"].ToString(), description);
             }
 
@@ -256,25 +235,25 @@ namespace ModelApp
         }
 
         /// <summary>
-        /// 根据表字段信息创建模型
+        /// 根据存储过程参数信息创建模型
         /// </summary>
-        /// <param name="dtColumns">表字段信息</param>
-        /// <param name="tbName">表名</param>
-        /// <param name="description">表注释/说明</param>
+        /// <param name="dtColumns">存储过程参数</param>
+        /// <param name="tbName">存储过程名</param>
+        /// <param name="description">存储过程 注释/说明</param>
         /// <returns>实体模型是否创建成功</returns>
         private bool CreateModel(DataTable dtColumns, string tbName, string description)
         {
             bool successed = false;
             string strNamespace = txtNamespace.Text.Trim();
             string clsName = GetClassName(tbName);
-            
+
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("using System;");
             stringBuilder.AppendLine();
             stringBuilder.Append("using YEasyModel;");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine();
-            stringBuilder.AppendFormat("namespace {0}", strNamespace);
+            stringBuilder.AppendFormat("namespace {0}.Proc", strNamespace);
             stringBuilder.AppendLine();
             stringBuilder.Append("{");
             stringBuilder.AppendLine();
@@ -286,19 +265,13 @@ namespace ModelApp
             stringBuilder.Append("    /// </summary>");
             stringBuilder.AppendLine();
             //stringBuilder.Append("    [Serializable]");
-            stringBuilder.AppendFormat("    [TableAttribute(TableName = \"{0}\")]", tbName);
+            stringBuilder.AppendFormat("    [ProcAttribute(ProcName = \"{0}\")]", tbName);
             stringBuilder.AppendLine();
-            stringBuilder.AppendFormat("    public partial class {0}:BaseModel", clsName);
+            stringBuilder.AppendFormat("    public partial class {0}", clsName);
             stringBuilder.AppendLine();
             stringBuilder.Append("    {");
             stringBuilder.AppendLine();
-            ////创建实体类字段
-            //foreach (DataRow dr in dtColumns.Rows)
-            //{
-            //    stringBuilder.AppendLine();
-            //    stringBuilder.AppendFormat("        private {0} {1};",YEasyModel.TypeUtil.GetType(dr["SystemTypeName"].ToString()), dr["ColumnName"].ToString());
-            //}
-
+            
             //创建实体类属性
             foreach (DataRow dr in dtColumns.Rows)
             {
@@ -309,28 +282,21 @@ namespace ModelApp
                 stringBuilder.AppendLine();
                 stringBuilder.Append("        /// <summary>");
                 stringBuilder.AppendLine();
-                stringBuilder.AppendFormat("        [Model(AutoReflect = true, ColumnName = \"{0}\", ColumnType = ColumnType.{1}Type, ColumnTitle = \"{2}\"", dr["ColumnName"].ToString(), dr["SystemTypeName"].ToString(), dr["Description"].ToString());
-                if ((bool)dr["IsIdentity"])
+                stringBuilder.AppendFormat("        [ProcParaAttribute(AutoReflect = true, ParaName = \"{0}\", DataType = ColumnType.{1}Type, ParaTitle = \"{2}\"", dr["ParaName"].ToString(), dr["DataType"].ToString(), dr["Description"].ToString());
+                if ((bool)dr["is_output"])
                 {
-                    stringBuilder.Append(", IsIdentity =true");
+                    stringBuilder.Append(", Is_Output =true");
                 }
-                if (dr["IsPrimaryKey"].ToString().Equals("1"))
+                if (dr["has_default_value"].ToString().Equals("1"))
                 {
-                    stringBuilder.Append(", IsPrimaryKey=true");
+                    stringBuilder.AppendFormat(", Has_Default_Value=true,Default_Value={0}", dr["default_value"]);
                 }
-                if(dr["SystemTypeName"].ToString().Equals(YEasyModel.ColumnType.varcharType)
-                    || dr["SystemTypeName"].ToString().Equals(YEasyModel.ColumnType.charType))
-                {
-                    stringBuilder.AppendFormat(", Length={0}", dr["MaxLength"].ToString());
-                }
-                else
-                {
-                    stringBuilder.AppendFormat(", Length={0}", dr["Precision"].ToString());
-                }
-                stringBuilder.AppendFormat(", Size={0}", dr["MaxLength"].ToString());
+                    stringBuilder.AppendFormat(", Length={0}", dr["Length"].ToString());
+               
+                stringBuilder.AppendFormat(", Size={0}", dr["Length"].ToString());
                 stringBuilder.Append(")]");
                 stringBuilder.AppendLine();
-                stringBuilder.AppendFormat("        public {0} {1}", YEasyModel.TypeUtil.GetTypeName(dr["SystemTypeName"].ToString()), dr["ColumnName"].ToString());
+                stringBuilder.AppendFormat("        public {0} {1}", YEasyModel.TypeUtil.GetTypeName(dr["DataType"].ToString()), dr["ParaName"].ToString());
                 stringBuilder.AppendLine();
                 stringBuilder.Append("        {");
                 stringBuilder.AppendLine();

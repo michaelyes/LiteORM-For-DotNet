@@ -53,6 +53,12 @@
   <ItemGroup>
     <Compile Include="BaseModel.cs" />
     <Compile Include="Dal.cs" />
+    <Compile Include="FrmProc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmProc.Designer.cs">
+      <DependentUpon>FrmProc.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +75,9 @@
     <Compile Include="ParamSetting.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FrmProc.resx">
+      <DependentUpon>FrmProc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>

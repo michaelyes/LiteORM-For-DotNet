@@ -418,7 +418,7 @@ namespace YEasyModel
                     break;
                 }
             }
-            string strSql = string.Format("select max({1}) from {0}", tbName, keyNames);
+            string strSql = string.Format("select isnull(max({1}),0) from {0}", tbName, keyNames);
 
             return DbHelperSQL.GetSingle(strSql.ToString());
         }
