@@ -87,8 +87,6 @@ namespace YEasyModel
         /// <summary>
         ///  Expression 转成 Join String
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
         /// <param name="predicate"></param>
         /// <param name="databaseType"></param>
         /// <returns></returns>

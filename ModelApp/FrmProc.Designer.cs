@@ -60,6 +60,8 @@
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.txtFilter = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -196,10 +198,12 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.txtFilter);
             this.panel1.Controls.Add(this.cbxDatabase);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.txtServer);
             this.panel1.Controls.Add(this.label8);
+            this.panel1.Controls.Add(this.label6);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
@@ -408,6 +412,24 @@
             this.Column3.ReadOnly = true;
             this.Column3.Visible = false;
             // 
+            // txtFilter
+            // 
+            this.txtFilter.Font = new System.Drawing.Font("宋体", 10F);
+            this.txtFilter.Location = new System.Drawing.Point(835, 11);
+            this.txtFilter.Name = "txtFilter";
+            this.txtFilter.Size = new System.Drawing.Size(238, 30);
+            this.txtFilter.TabIndex = 8;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("宋体", 10F);
+            this.label6.Location = new System.Drawing.Point(752, 16);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(89, 20);
+            this.label6.TabIndex = 9;
+            this.label6.Text = "关键字：";
+            // 
             // FrmProc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
@@ -468,6 +490,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.TextBox txtFilter;
+        private System.Windows.Forms.Label label6;
     }
 }
 

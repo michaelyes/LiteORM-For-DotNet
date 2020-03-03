@@ -56,6 +56,12 @@ namespace ModelApp
             dgvTable.DoubleClick += DgvTable_DoubleClick;
             ckbShowView.Click += CkbShowView_Click;
             btnProc.Click += BtnProc_Click;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
+        }
+
+        private void TxtFilter_TextChanged(object sender, EventArgs e)
+        {
+            dataTable.DefaultView.RowFilter = "name like '%" + txtFilter.Text.Trim() + "%'";
         }
 
         private void BtnProc_Click(object sender, EventArgs e)

@@ -46,6 +46,7 @@
             this.dgv_Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnProc = new System.Windows.Forms.Button();
             this.ckbShowView = new System.Windows.Forms.CheckBox();
             this.cbxDatabase = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -62,7 +63,8 @@
             this.btnSelectDir = new System.Windows.Forms.Button();
             this.txtDir = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnProc = new System.Windows.Forms.Button();
+            this.txtFilter = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -118,7 +120,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.txtDir);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Size = new System.Drawing.Size(1193, 558);
-            this.splitContainer1.SplitterDistance = 365;
+            this.splitContainer1.SplitterDistance = 363;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -134,7 +136,7 @@
             this.groupBox1.Location = new System.Drawing.Point(0, 55);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1193, 310);
+            this.groupBox1.Size = new System.Drawing.Size(1193, 308);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "选择表";
@@ -195,7 +197,7 @@
             this.dgvCheckedTable.RowHeadersWidth = 20;
             this.dgvCheckedTable.RowTemplate.Height = 25;
             this.dgvCheckedTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCheckedTable.Size = new System.Drawing.Size(491, 281);
+            this.dgvCheckedTable.Size = new System.Drawing.Size(491, 279);
             this.dgvCheckedTable.TabIndex = 1;
             // 
             // dataGridViewTextBoxColumn1
@@ -242,7 +244,7 @@
             this.dgvTable.RowHeadersWidth = 20;
             this.dgvTable.RowTemplate.Height = 25;
             this.dgvTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTable.Size = new System.Drawing.Size(491, 281);
+            this.dgvTable.Size = new System.Drawing.Size(491, 279);
             this.dgvTable.TabIndex = 0;
             // 
             // Column1
@@ -274,7 +276,8 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.btnProc);
+            this.panel1.Controls.Add(this.txtFilter);
+            this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.ckbShowView);
             this.panel1.Controls.Add(this.cbxDatabase);
             this.panel1.Controls.Add(this.label5);
@@ -287,12 +290,21 @@
             this.panel1.Size = new System.Drawing.Size(1193, 55);
             this.panel1.TabIndex = 1;
             // 
+            // btnProc
+            // 
+            this.btnProc.Location = new System.Drawing.Point(183, 2);
+            this.btnProc.Name = "btnProc";
+            this.btnProc.Size = new System.Drawing.Size(145, 35);
+            this.btnProc.TabIndex = 9;
+            this.btnProc.Text = "存储过程";
+            this.btnProc.UseVisualStyleBackColor = true;
+            // 
             // ckbShowView
             // 
             this.ckbShowView.AutoSize = true;
             this.ckbShowView.Checked = true;
             this.ckbShowView.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ckbShowView.Location = new System.Drawing.Point(742, 13);
+            this.ckbShowView.Location = new System.Drawing.Point(717, 15);
             this.ckbShowView.Name = "ckbShowView";
             this.ckbShowView.Size = new System.Drawing.Size(115, 24);
             this.ckbShowView.TabIndex = 8;
@@ -303,7 +315,7 @@
             // 
             this.cbxDatabase.Font = new System.Drawing.Font("宋体", 10F);
             this.cbxDatabase.FormattingEnabled = true;
-            this.cbxDatabase.Location = new System.Drawing.Point(466, 13);
+            this.cbxDatabase.Location = new System.Drawing.Point(442, 13);
             this.cbxDatabase.Name = "cbxDatabase";
             this.cbxDatabase.Size = new System.Drawing.Size(238, 28);
             this.cbxDatabase.TabIndex = 6;
@@ -312,7 +324,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("宋体", 10F);
-            this.label5.Location = new System.Drawing.Point(384, 16);
+            this.label5.Location = new System.Drawing.Point(360, 16);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(89, 20);
             this.label5.TabIndex = 7;
@@ -442,20 +454,30 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "输出目录：";
             // 
-            // btnProc
+            // txtFilter
             // 
-            this.btnProc.Location = new System.Drawing.Point(944, 9);
-            this.btnProc.Name = "btnProc";
-            this.btnProc.Size = new System.Drawing.Size(145, 35);
-            this.btnProc.TabIndex = 9;
-            this.btnProc.Text = "存储过程";
-            this.btnProc.UseVisualStyleBackColor = true;
+            this.txtFilter.Font = new System.Drawing.Font("宋体", 10F);
+            this.txtFilter.Location = new System.Drawing.Point(942, 11);
+            this.txtFilter.Name = "txtFilter";
+            this.txtFilter.Size = new System.Drawing.Size(238, 30);
+            this.txtFilter.TabIndex = 10;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("宋体", 10F);
+            this.label6.Location = new System.Drawing.Point(859, 16);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(89, 20);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "关键字：";
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1193, 601);
+            this.Controls.Add(this.btnProc);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("宋体", 10F);
@@ -520,6 +542,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgv_Id;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.Button btnProc;
+        private System.Windows.Forms.TextBox txtFilter;
+        private System.Windows.Forms.Label label6;
     }
 }
 

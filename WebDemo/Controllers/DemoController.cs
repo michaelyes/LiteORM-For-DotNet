@@ -12,13 +12,14 @@ namespace WebDemo.Controllers
         // GET api/<controller>
         public IEnumerable<DBModel.Person_FaceInfoModel> Get()
         {
+            //调用存储过程查询CT_Comsume表最大ID
             DBModel.Proc.CT_Comsume_GetMaxIdModel proc = new DBModel.Proc.CT_Comsume_GetMaxIdModel();
             int iReturn = YEasyModel.ProcedureUtil.Execute<DBModel.Proc.CT_Comsume_GetMaxIdModel>(proc);
+            //调用存储过程删除Detail_ID = 4的记录
             DBModel.Proc.CT_ComsumeDetail_DeleteModel de = new DBModel.Proc.CT_ComsumeDetail_DeleteModel();
             de.Detail_ID = 4;
-
             int iReturn2 = YEasyModel.ProcedureUtil.Execute<DBModel.Proc.CT_ComsumeDetail_DeleteModel>(de);
-
+            //多表join联合查询
             List<DBModel.Person_FaceInfoModel> person_FaceInfoModel = YEasyModel.ModelDAL.Join<DBModel.Person_FaceInfoModel, 
                 DBModel.Person_FaceInfoModel, DBModel.ST_PersonModel>((t1, t2) => YEasyModel.SqlColumnUtil.IsNull(t1.Person_ID,0) == t2.Person_ID,(t1,t2)=>t1.Remark ==null,
                 null,(t1,t2)=>t1.Person_ID, (t1, t2) => t1.Person_No, (t1, t2) => t1.FacePath);

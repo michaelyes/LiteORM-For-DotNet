@@ -53,6 +53,12 @@ namespace ModelApp
             btnSelectDir.Click += BtnSelectDir_Click;
             dgvCheckedTable.DoubleClick += DgvCheckedTable_DoubleClick;
             dgvTable.DoubleClick += DgvTable_DoubleClick;
+            txtFilter.TextChanged += TxtFilter_TextChanged;
+        }
+
+        private void TxtFilter_TextChanged(object sender, EventArgs e)
+        {
+            dataTable.DefaultView.RowFilter = "name like '%" + txtFilter.Text.Trim() + "%'";
         }
 
         private void DgvTable_DoubleClick(object sender, EventArgs e)

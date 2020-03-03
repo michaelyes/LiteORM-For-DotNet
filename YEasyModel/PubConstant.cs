@@ -2,7 +2,9 @@
 
 namespace YEasyModel
 {
-
+    /// <summary>
+    /// 获取/设置数据库连接字符串
+    /// </summary>
     public class PubConstant
     {        
         /// <summary>
