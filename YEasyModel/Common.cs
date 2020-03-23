@@ -1,5 +1,8 @@
 ﻿namespace YEasyModel
 {
+    /// <summary>
+    /// 常用参数类
+    /// </summary>
     public class Common
     {
         /// <summary>

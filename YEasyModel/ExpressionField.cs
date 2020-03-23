@@ -31,7 +31,7 @@ namespace YEasyModel
         /// <returns></returns>
         public static string GetFieldName<T1, T2>(Expression<Func<T1, T2, object>> fieldExpression)
         {
-            string fieldName = GetFieldName(fieldExpression.Body);
+            string fieldName = GetFieldName(fieldExpression.Body, true);
 
             return fieldName;
         }
@@ -46,7 +46,7 @@ namespace YEasyModel
         /// <returns></returns>
         public static string GetFieldName<T1, T2, T3>(Expression<Func<T1, T2, T3, object>> fieldExpression)
         {
-            string fieldName = GetFieldName(fieldExpression.Body);
+            string fieldName = GetFieldName(fieldExpression.Body, true);
 
             return fieldName;
         }
@@ -62,7 +62,7 @@ namespace YEasyModel
         /// <returns></returns>
         public static string GetFieldName<T1, T2, T3, T4>(Expression<Func<T1, T2, T3, T4, object>> fieldExpression)
         {
-            string fieldName = GetFieldName(fieldExpression.Body);
+            string fieldName = GetFieldName(fieldExpression.Body, true);
 
             return fieldName;
         }
@@ -79,7 +79,7 @@ namespace YEasyModel
         /// <returns></returns>
         public static string GetFieldName<T1, T2, T3, T4, T5>(Expression<Func<T1, T2, T3, T4, T5, object>> fieldExpression)
         {
-            string fieldName = GetFieldName(fieldExpression.Body);
+            string fieldName = GetFieldName(fieldExpression.Body, true);
 
             return fieldName;
         }
@@ -97,7 +97,7 @@ namespace YEasyModel
         /// <returns></returns>
         public static string GetFieldName<T1, T2, T3, T4, T5, T6>(Expression<Func<T1, T2, T3, T4, T5, T6, object>> fieldExpression)
         {
-            string fieldName = GetFieldName(fieldExpression.Body);
+            string fieldName = GetFieldName(fieldExpression.Body, true);
 
             return fieldName;
         }
@@ -106,8 +106,9 @@ namespace YEasyModel
         /// 根据表达式获取字段名
         /// </summary>
         /// <param name="expressionBody">表达式</param>
+        /// <param name="isMulti">是否多表：如果多表操作，则保留别名</param>
         /// <returns></returns>
-        public static string GetFieldName(Expression expressionBody)
+        public static string GetFieldName(Expression expressionBody, bool isMulti = false)
         {
             string fieldName = string.Empty;
             MemberExpression body = null;
@@ -128,7 +129,19 @@ namespace YEasyModel
                 throw new InvalidOperationException("Not a member access.");
             }
             PropertyInfo member = body.Member as PropertyInfo;
-            fieldName = body.ToString();
+            if (isMulti)
+            {
+                fieldName = body.ToString();
+            }
+            else
+            {
+                fieldName = member.Name;
+            }
+
+            if (fieldName.EndsWith(Common.Star_SelectAllColumn))//查询表的全部字段
+            {
+                fieldName = fieldName.Replace(Common.Star_SelectAllColumn, "*");
+            }
 
             return fieldName;
         }

@@ -31,7 +31,7 @@ namespace ModelApp
             catch { }
             btnCancel.Click += BtnCancel_Click;
             btnOK.Click += BtnOK_Click;
-            //txtPassword.TextChanged += TxtPassword_TextChanged;
+            txtPassword.LostFocus += (s,evn)=>{ TxtPassword_TextChanged(null, null); };
             txtPassword.KeyDown += TxtPassword_KeyDown;
         }
 
