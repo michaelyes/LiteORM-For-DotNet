@@ -37,6 +37,10 @@ namespace WebDemo.Controllers
         // GET api/<controller>
         public IEnumerable<DBModel.Person_FaceInfoModel> Get()
         {
+
+            var m111 = YEasyModel.ModelDAL.SelectNotExists<DBModel.ST_PersonModel, DBModel.Person_FaceInfoModel>(
+                (t1, t2) => t1.Person_ID == t2.Person_ID, t1 => t1.Person_Name != "", f => f.Person_Name + " as myName");
+
             //调用存储过程查询CT_Comsume表最大ID
             DBModel.Proc.CT_Comsume_GetMaxIdModel proc = new DBModel.Proc.CT_Comsume_GetMaxIdModel();
             int iReturn = YEasyModel.ProcedureUtil.Execute<DBModel.Proc.CT_Comsume_GetMaxIdModel>(proc);

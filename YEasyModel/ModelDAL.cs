@@ -421,7 +421,7 @@ namespace YEasyModel
 
             return DbHelperSQL.GetSingle(strSql.ToString());
         }
-               
+
         /// <summary>
         /// 查询当前指定字段的最大值
         /// </summary>
@@ -885,6 +885,48 @@ namespace YEasyModel
         public static int ExecuteSql(string sqlScript)
         {
             return DbHelperSQL.ExecuteSql(sqlScript);
+        }
+
+        /// <summary>
+        /// Not Exists查询
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="NotExistsT"></typeparam>
+        /// <param name="filter"></param>
+        /// <param name="notExistsFilter"></param>
+        /// <param name="fields"></param>
+        /// <returns></returns>
+        public static List<T> SelectNotExists<T, NotExistsT>(Expression<Func<T, NotExistsT, bool>> notExistsFilter, Expression<Func<T, bool>> filter = null, params Expression<Func<T, object>>[] fields)
+        {
+            string strSql = SelectScript(filter, null, fields);
+            var model = Activator.CreateInstance<T>();
+            Type t = model.GetType();//获得该类的Type
+            string tbName = GetTableName(t);//表名
+            string nickName = " as " + notExistsFilter.Parameters[0];
+
+            strSql = strSql.Replace(tbName, tbName + nickName);
+            if (strSql.IndexOf(" where ") > 0)
+                strSql += " and " + NotExists(notExistsFilter);
+            else
+                strSql += " where " + NotExists(notExistsFilter);
+
+            List<T> list = new List<T>();
+            var dt = DbHelperSQL.Query(strSql.ToString()).Tables[0];
+            list = ModelUtil.DataTableParse<T>(dt);
+
+            return list;
+        }
+
+        private static string NotExists<T, SubT>(Expression<Func<T, SubT, bool>> notExistsFilter = null)
+        {
+            var model = Activator.CreateInstance<SubT>();
+            Type t = model.GetType();//获得该类的Type
+            string tbName = GetTableName(t);//表名
+            string nickName = " as " + notExistsFilter.Parameters[1];
+            string filter = LinqCompileExt.GetJoinByLambda(notExistsFilter, DataBaseType.SqlServer);
+            string strSql = string.Format(" not exists (select * from {0} {2} where {1}) ", tbName, filter, nickName);
+
+            return strSql;
         }
     }
 }

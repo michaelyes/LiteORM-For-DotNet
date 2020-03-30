@@ -124,11 +124,38 @@ namespace YEasyModel
                     body = expression2.Operand as MemberExpression;
                 }
             }
+
+            PropertyInfo member = null;
             if (body == null)
             {
-                throw new InvalidOperationException("Not a member access.");
+                if (expressionBody is BinaryExpression)
+                {
+                    BinaryExpression binaryExpression = expressionBody as BinaryExpression;
+                    Expression left = (binaryExpression.Left);
+                    Expression right = (binaryExpression.Right);
+
+                    if (isMulti)
+                    {
+                        fieldName = fieldName = left.ToString() + (right as ConstantExpression).Value;
+                    }
+                    else
+                    {
+                        if (left is MemberExpression)
+                        {
+                            body = left as MemberExpression;
+                            member = body.Member as PropertyInfo;
+                            fieldName = member.Name + (right as ConstantExpression).Value;
+                        }
+                    }
+                    return fieldName;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Not a member access.");
+                }
             }
-            PropertyInfo member = body.Member as PropertyInfo;
+
+            member = body.Member as PropertyInfo;
             if (isMulti)
             {
                 fieldName = body.ToString();

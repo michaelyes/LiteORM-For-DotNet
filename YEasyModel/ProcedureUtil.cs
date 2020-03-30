@@ -134,6 +134,57 @@ namespace YEasyModel
             return result;
         }
 
+
+
+        /// <summary>
+        /// 执行存储过程-查询数据
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static DataSet Select4DataSet<T>(T model)
+        {
+            return Select4DataSet<T>(ref model);
+        }
+
+        /// <summary>
+        /// 执行存储过程-查询数据
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static DataSet Select4DataSet<T>(ref T model)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            Type t = model.GetType();//获得该类的Type
+            string columns = string.Empty;//字段名 
+            List<string> keyNames = new List<string>();//主键字段名
+            string procName = GetProcName(t);//存储过程名
+            bool has_ouput = false;
+
+            GetParameter(model, t.GetProperties(), ref parameters, ref has_ouput);
+
+            SqlParameter[] parameterArray = parameters.ToArray();
+            DataSet result = DbHelperSQL.RunProcedure(procName, parameterArray, "table");
+            if (has_ouput)
+            {
+                foreach (PropertyInfo pi in t.GetProperties())
+                {
+                    try
+                    {
+                        ProcParaAttribute attr = (ProcParaAttribute)Attribute.GetCustomAttribute(pi, typeof(ProcParaAttribute));// 属性值
+                        if (attr != null && attr.Is_Output)
+                        {
+                            var para = parameterArray.First(q => q.ParameterName == attr.ParaName);
+                            if (para != null)
+                                pi.SetValue(model, para.Value, null);
+                        }
+                    }
+                    catch { }
+                }
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// 根据实体对象字段生成参数
         /// </summary>
@@ -172,10 +223,8 @@ namespace YEasyModel
         /// <summary>
         /// 创建SqlParameter
         /// </summary>
-        /// <param name="parameterName">参数名</param>
+        /// <param name="attr">参数名</param>
         /// <param name="value">值</param>
-        /// <param name="type">SqlDbType数据类型</param>
-        /// <param name="length">最大长度</param>
         /// <returns></returns>
         public static SqlParameter CreateSqlParameter(ProcParaAttribute attr, object value)
         {

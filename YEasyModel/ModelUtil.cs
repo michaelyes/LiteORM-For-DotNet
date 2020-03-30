@@ -107,6 +107,7 @@ namespace YEasyModel
             Type t = model.GetType();//获得该类的Type
             dataTable.TableName = ModelDAL.GetTableName(t);
             //创建表结构、设置字段信息
+            bool hasStar = false;
             foreach (PropertyInfo pi in t.GetProperties())
             {
                 DataColumn dataColumn = new DataColumn();
@@ -135,20 +136,27 @@ namespace YEasyModel
                     //    dataColumn.DataType = typeof(string);
                     //}
                 }
-                if (Common.Star_SelectAllColumn.Equals(pi.Name)) continue;
+                if (Common.Star_SelectAllColumn.Equals(pi.Name))
+                {
+                    hasStar = true;
+                    continue;
+                }
                 dataTable.Columns.Add(dataColumn);
             }
-
+            
             //添加行数据
             foreach (var m in modelList)
             {
-                object[] values = new object[t.GetProperties().Length];
+                object[] values = new object[t.GetProperties().Length - (hasStar ? 1 : 0)];
                 int idx = 0;
                 foreach (PropertyInfo pi in t.GetProperties())
                 {
-                    if (Common.Star_SelectAllColumn.Equals(pi.Name)) continue;
+                    if (Common.Star_SelectAllColumn.Equals(pi.Name))
+                    {
+                        continue;
+                    }
                     object value = pi.GetValue(m, null);
-                    //ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
+                    ModelAttribute attr = (ModelAttribute)Attribute.GetCustomAttribute(pi, typeof(ModelAttribute));// 属性值
                     //if (attr != null && !string.IsNullOrEmpty(attr.ColumnType))
                     //{
                     //    value = pi.GetValue(model, null);
@@ -157,6 +165,12 @@ namespace YEasyModel
                     //{
                     //    value = pi.GetValue(model, null);
                     //}
+                    if (attr.ColumnType == ColumnType.datetimeType &&
+                            (null == value || (System.DateTime)value == default(System.DateTime)))
+                    {
+                        //空时间类型或空值，不写入数据库
+                        continue;
+                    }
                     values[idx] = value;
                     idx++;
                 }
