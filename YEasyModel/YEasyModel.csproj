@@ -54,6 +54,7 @@
     <Compile Include="DataBaseType.cs" />
     <Compile Include="DbHelperSQL.cs" />
     <Compile Include="ExpressionField.cs" />
+    <Compile Include="ExpressionHelp.cs" />
     <Compile Include="ExpressionVisitorExt.cs" />
     <Compile Include="LinqCompile.cs" />
     <Compile Include="LinqCompileExt.cs" />

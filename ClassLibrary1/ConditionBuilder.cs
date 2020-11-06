@@ -122,9 +122,6 @@ namespace YEasyModel
                 case ExpressionType.Divide:
                     opr = "/";
                     break;
-                case ExpressionType.Or:
-                    opr = "OR";
-                    break;
                 default:
                     throw new NotSupportedException(b.NodeType + "is not supported.");
             }
