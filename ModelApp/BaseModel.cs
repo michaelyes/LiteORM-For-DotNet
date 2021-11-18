@@ -16,6 +16,30 @@ namespace ModelApp
         /// <param name="clsName">类名</param>
         /// <param name="content">文件内容</param>
         /// <returns>是否保存成功</returns>
+        public static bool SaveFile2Java(string clsName, string content, string dir)
+        {
+            string path = dir.Trim();
+            path = path + "\\" + clsName + ".java";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            byte[] buff = Encoding.UTF8.GetBytes(content);
+            var fs = File.Create(path);
+            fs.Write(buff, 0, buff.Length);
+            fs.Close();
+            fs.Dispose();
+
+            return true;
+        }
+
+        /// <summary>
+        /// 保存实体类代码文件
+        /// </summary>
+        /// <param name="clsName">类名</param>
+        /// <param name="content">文件内容</param>
+        /// <returns>是否保存成功</returns>
         public static bool SaveFile(string clsName, string content, string dir)
         {
             string path = dir.Trim();

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace ModelApp
@@ -13,6 +11,7 @@ namespace ModelApp
         [STAThread]
         static void Main()
         {
+            //BuildingJava.ReadExcelData();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FrmMain());
